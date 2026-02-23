@@ -2,7 +2,7 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-const db = new Database(path.join(__dirname, 'quotation.db'));
+const db = new Database(path.join(process.cwd(), 'server', 'quotation.db'));
 
 // Enable foreign keys
 db.pragma('foreign_keys = ON');
@@ -161,14 +161,14 @@ const initDatabase = () => {
 
   // Create default admin user if not exists
   const checkAdmin = db.prepare('SELECT COUNT(*) as count FROM users WHERE role = ?').get('admin');
-  
+
   if (checkAdmin.count === 0) {
     const hashedPassword = bcrypt.hashSync('admin123', 10);
     db.prepare(`
       INSERT INTO users (name, email, password, role) 
       VALUES (?, ?, ?, ?)
     `).run('Admin User', 'admin@company.com', hashedPassword, 'admin');
-    
+
     console.log('✅ Default admin user created:');
     console.log('   Email: admin@company.com');
     console.log('   Password: admin123');
@@ -176,13 +176,13 @@ const initDatabase = () => {
 
   // Create default company settings if not exists
   const checkSettings = db.prepare('SELECT COUNT(*) as count FROM company_settings').get();
-  
+
   if (checkSettings.count === 0) {
     db.prepare(`
       INSERT INTO company_settings (id, company_name, email, phone, address, gstin) 
       VALUES (1, ?, ?, ?, ?, ?)
     `).run('Your Company Name', 'info@yourcompany.com', '+91 1234567890', 'Your Company Address', '29XXXXXXXXXXXXX');
-    
+
     console.log('✅ Default company settings created');
   }
 
