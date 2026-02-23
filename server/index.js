@@ -24,7 +24,7 @@ app.use('/api/quotations', require('./routes/quotations'));
 app.use('/api/invoices', require('./routes/invoices'));
 
 // Serve frontend static files in production
-const frontendPath = path.join(__dirname, '../dist');
+const frontendPath = path.resolve(process.cwd(), 'dist');
 app.use(express.static(frontendPath));
 
 // For any other route, send the React index.html
